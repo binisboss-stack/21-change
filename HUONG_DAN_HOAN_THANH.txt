@@ -1,0 +1,51 @@
+=== BƯỚC 1: KẾT NỐI FORM VỚI MAKE.COM ===
+
+1. Vào https://www.make.com → tạo Scenario mới
+2. Thêm module "Webhooks" → "Custom webhook" → Create
+3. Copy URL webhook (dạng https://hook.eu1.make.com/xxxxx)
+4. Mở file config.js trong project, dán URL vào dòng:
+   window.MAKE_WEBHOOK_URL = 'URL_CUA_BAN';
+5. Bật scenario (ON) trên Make.com
+6. Mở index.html trên trình duyệt (hoặc sau khi deploy), điền form → Gửi yêu cầu
+7. Kiểm tra Make.com có nhận bundle dữ liệu (name, phone, email, message)
+
+Lưu ý: Trên Make, map các field name, phone, email, message vào Google Sheets / Telegram tùy ý.
+
+
+=== BƯỚC 2: DEPLOY LÊN GITHUB + NETLIFY + DOMAIN xau1000pips.com ===
+
+A. Đẩy code lên GitHub
+   git init
+   git add .
+   git commit -m "Landing page + form webhook"
+   git branch -M main
+   git remote add origin https://github.com/TEN_CUA_BAN/landing-xauusd.git
+   git push -u origin main
+
+B. Netlify (khuyên dùng cho site tĩnh)
+   1. https://app.netlify.com → Add new site → Import from Git
+   2. Chọn repo GitHub vừa push
+   3. Build command: (để trống)
+   4. Publish directory: . (dấu chấm = thư mục gốc)
+   5. Deploy
+
+C. Gắn domain xau1000pips.com
+   1. Netlify → Site settings → Domain management → Add custom domain
+   2. Nhập: xau1000pips.com
+   3. Tại nhà đăng ký domain (GoDaddy, Namecheap, Cloudflare...), thêm DNS:
+      - Type A → @ → 75.2.60.5 (IP Netlify, kiểm tra docs Netlify mới nhất)
+      HOẶC
+      - CNAME www → TEN_SITE.netlify.app
+   4. Chờ DNS propagate (5 phút – 48 giờ)
+   5. Bật HTTPS (Netlify tự cấp Let's Encrypt)
+
+D. Thay thế bằng Vercel (nếu muốn)
+   1. https://vercel.com → Import Git repository
+   2. Framework: Other, Root: ./
+   3. Settings → Domains → Add xau1000pips.com
+   4. CNAME @ hoặc A record theo hướng dẫn Vercel
+
+=== CHECKLIST NGÀY 3 ===
+[ ] Website online tại https://xau1000pips.com
+[ ] Form gửi được dữ liệu lên Make.com
+[x] Giao diện chuyên nghiệp (đã có)
