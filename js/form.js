@@ -22,13 +22,15 @@
         }
 
         const data = new FormData(form);
+        const now = new Date();
         const payload = {
             name: (data.get('name') || '').toString().trim(),
             phone: (data.get('phone') || '').toString().trim(),
             email: (data.get('email') || '').toString().trim(),
             message: (data.get('message') || '').toString().trim(),
-            source: 'xau1000pips.com',
-            submitted_at: new Date().toISOString()
+            source: (window.SITE_SOURCE || window.location.origin || '').trim(),
+            submitted_at: now.toISOString(),
+            submitted_at_vn: now.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
         };
 
         if (!payload.name || !payload.phone) {

@@ -1,0 +1,68 @@
+================================================================================
+  FORM WEBSITE → GOOGLE SHEETS (qua Make.com — khuyên dùng)
+================================================================================
+
+Form trên website ĐÃ gửi JSON lên Webhook Make.com. Bạn chỉ cần thêm bước
+Google Sheets trong cùng Scenario (không sửa code thêm).
+
+--- BƯỚC 1: Tạo Google Sheet ---
+
+1. Mở https://sheets.google.com → Tạo bảng tính mới.
+2. Đặt tên file, ví dụ: "Leads - Tiem Hoa T Mon".
+3. Dòng 1 (tiêu đề cột), gõ lần lượt:
+
+   A1: Thời gian
+   B1: Họ tên
+   C1: Số điện thoại
+   D1: Email
+   E1: Ghi chú
+   F1: Nguồn
+
+--- BƯỚC 2: Thêm Google Sheets vào Scenario Make ---
+
+1. Vào Make.com → mở Scenario có module "Webhooks" (form đã chạy OK).
+2. Bấm dấu + NGAY SAU module Webhooks.
+3. Tìm "Google Sheets" → chọn "Add a row".
+4. Lần đầu: Connect tài khoản Google → cho phép quyền Sheets.
+5. Spreadsheet: chọn file vừa tạo.
+6. Sheet: Sheet1 (hoặc tên sheet của bạn).
+
+--- BƯỚC 3: Map cột (quan trọng) ---
+
+Trong từng ô của module "Add a row", chọn từ bundle Webhook:
+
+   Thời gian      →  submitted_at_vn
+   Họ tên         →  name
+   Số điện thoại  →  phone
+   Email          →  email
+   Ghi chú        →  message
+   Nguồn          →  source
+
+(Có thể dùng submitted_at thay submitted_at_vn nếu muốn giờ ISO.)
+
+7. Bấm OK → Save scenario.
+8. Bật Scenario ON (góc dưới).
+
+--- BƯỚC 4: Test ---
+
+1. Mở website → điền form → "Đặt hàng ngay".
+2. Vào Make → History: thấy Webhook + Google Sheets đều xanh.
+3. Mở Google Sheet → dòng 2 có dữ liệu mới.
+
+================================================================================
+  LƯU Ý
+================================================================================
+
+• Gói Free Make: mỗi lần gửi form = 2 operations (Webhook + Sheets).
+• Nếu Sheet không có dòng mới: kiểm tra map cột và Scenario đang ON.
+• Không cần URL Google Sheet trong config.js — Make xử lý hết.
+
+================================================================================
+  TÙY CHỌN: Báo Telegram / Email khi có đơn mới
+================================================================================
+
+Sau module Google Sheets, bấm + thêm:
+  • Telegram → Send a message (gửi name + phone vào nhóm)
+  • Gmail → Send an email
+
+Map field tương tự từ bundle Webhook.

@@ -77,6 +77,218 @@
             box-shadow: 0 15px 40px rgba(250, 204, 21, 0.4);
         }
 
+        .cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+        .cta-row .btn-cta {
+            font-size: 1rem;
+            padding: 14px 28px;
+        }
+        .btn-cta--zalo {
+            background: #0068ff;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 104, 255, 0.35);
+        }
+        .btn-cta--zalo:hover {
+            box-shadow: 0 15px 40px rgba(0, 104, 255, 0.5);
+        }
+        .btn-cta--outline {
+            background: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--accent-yellow);
+            box-shadow: none;
+        }
+        .btn-cta--outline:hover {
+            background: rgba(250, 204, 21, 0.1);
+            box-shadow: 0 8px 24px rgba(250, 204, 21, 0.15);
+        }
+        .btn-cta--email {
+            background: var(--bg-card);
+            color: var(--accent-yellow);
+            border: 2px solid rgba(250, 204, 21, 0.4);
+            box-shadow: none;
+        }
+
+        .top-contact {
+            background: var(--bg-gray);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 0;
+            font-size: 0.9rem;
+        }
+        .top-contact-inner {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .top-contact a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .top-contact a:hover {
+            color: var(--accent-yellow);
+        }
+        .top-contact strong {
+            color: var(--text-light);
+        }
+
+        .contact-section {
+            background: var(--bg-gray);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-top: 32px;
+        }
+        .contact-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .contact-card-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+        .contact-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        .contact-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+        .contact-card .btn-cta {
+            width: 100%;
+            font-size: 0.95rem;
+            padding: 14px 20px;
+        }
+
+        .sticky-cta {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(250, 204, 21, 0.2);
+            padding: 10px 12px;
+            padding-bottom: max(10px, env(safe-area-inset-bottom));
+        }
+        .sticky-cta-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .sticky-cta .btn-cta {
+            font-size: 0.75rem;
+            padding: 12px 8px;
+            text-align: center;
+            width: 100%;
+        }
+
+        /* Bong bóng liên hệ góc phải */
+        .fab-bubbles {
+            position: fixed;
+            right: clamp(12px, 3vw, 24px);
+            bottom: clamp(16px, 4vw, 28px);
+            bottom: max(clamp(16px, 4vw, 28px), env(safe-area-inset-bottom));
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 2vw, 14px);
+            align-items: flex-end;
+            pointer-events: none;
+        }
+        .fab-bubble {
+            pointer-events: auto;
+            width: clamp(48px, 12vw, 58px);
+            height: clamp(48px, 12vw, 58px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            position: relative;
+        }
+        .fab-bubble:hover,
+        .fab-bubble:focus-visible {
+            transform: scale(1.1);
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.55);
+        }
+        .fab-bubble:focus-visible {
+            outline: 2px solid var(--accent-yellow);
+            outline-offset: 3px;
+        }
+        .fab-bubble svg {
+            width: clamp(22px, 5.5vw, 26px);
+            height: clamp(22px, 5.5vw, 26px);
+        }
+        .fab-bubble--zalo {
+            background: #0068ff;
+            color: #fff;
+            animation: fab-pulse 2.5s ease-in-out infinite;
+        }
+        .fab-bubble--phone {
+            background: var(--accent-yellow);
+            color: var(--text-dark);
+        }
+        .fab-bubble--order {
+            background: linear-gradient(145deg, #22c55e, #16a34a);
+            color: #fff;
+        }
+        .fab-label {
+            position: absolute;
+            right: calc(100% + 12px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.88);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            pointer-events: none;
+        }
+        .fab-label::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-left-color: rgba(0, 0, 0, 0.88);
+        }
+        .fab-bubble:hover .fab-label,
+        .fab-bubble:focus-visible .fab-label {
+            opacity: 1;
+            visibility: visible;
+        }
+        @keyframes fab-pulse {
+            0%, 100% { box-shadow: 0 6px 24px rgba(0, 104, 255, 0.4); }
+            50% { box-shadow: 0 6px 28px rgba(0, 104, 255, 0.75), 0 0 0 8px rgba(0, 104, 255, 0.15); }
+        }
+
         /* 1. Hero Banner */
         .hero {
             padding: 100px 0 60px;
@@ -363,18 +575,43 @@
             .expertise-grid { grid-template-columns: 1fr; }
             .proof-grid { flex-direction: column; gap: 16px; align-items: center; }
             .stack-item { flex-direction: column; align-items: flex-start; gap: 8px;}
+            .cta-row { flex-direction: column; width: 100%; }
+            .cta-row .btn-cta { width: 100%; max-width: 320px; }
+            .sticky-cta { display: none; }
+            .fab-label {
+                display: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .fab-bubbles {
+                right: 10px;
+                gap: 8px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Thanh liên hệ nhanh -->
+    <div class="top-contact">
+        <div class="container top-contact-inner">
+            <span>📞 Hotline: <a data-cta="phone" href="#"><strong data-contact="phone">0901 234 567</strong></a></span>
+            <span>✉️ Email: <a data-cta="email" href="#"><strong data-contact="email">hotro@stockvn.vn</strong></a></span>
+            <span>💬 <a data-cta="zalo" href="#">Nhắn Zalo ngay</a></span>
+        </div>
+    </div>
 
     <!-- 1. Hero Banner -->
     <header class="hero container">
         <div class="brand-font text-yellow mb-8" style="font-size:1.5rem; letter-spacing: 2px;">STOCKVN.</div>
         <h1 class="hero-title">Làm Chủ Cổ Phiếu<br><span class="text-yellow">Nhân Đôi Tài Khoản</span></h1>
         <p class="hero-sub">Hệ thống tín hiệu VIP chứng khoán thực chiến: Loại bỏ hoàn toàn cảm xúc, tối đa hóa lợi nhuận ngay cả khi VN-Index biến động mạnh.</p>
-        <a href="#register-form" class="btn-cta">Nhận Phím Hàng VIP Ngay</a>
-        <p style="margin-top: 16px; font-size: 0.9rem; color: var(--text-muted);">*Chỉ còn 12 suất ưu đãi trong tháng này</p>
+        <div class="cta-row mb-4">
+            <a data-cta="order" href="#register-form" class="btn-cta">Mua ngay</a>
+            <a data-cta="zalo" href="#" class="btn-cta btn-cta--zalo">Nhắn Zalo</a>
+            <a data-cta="phone" href="#" class="btn-cta btn-cta--outline">Gọi ngay</a>
+        </div>
+        <p style="margin-top: 8px; font-size: 0.9rem; color: var(--text-muted);">*Chỉ còn 12 suất ưu đãi trong tháng này</p>
     </header>
 
     <!-- 2. Social Proof Bar -->
@@ -478,7 +715,11 @@
                     <label for="message">Ghi chú (tuỳ chọn)</label>
                     <textarea id="message" name="message" placeholder="Vốn đầu tư, kinh nghiệm..."></textarea>
                 </div>
-                <button type="submit" class="btn-cta btn-submit" style="background:var(--text-dark); color:var(--accent-yellow);">Gửi yêu cầu</button>
+                <button type="submit" class="btn-cta btn-submit" style="background:var(--text-dark); color:var(--accent-yellow);">Đặt hàng ngay</button>
+                <div class="cta-row" style="margin-top: 16px;">
+                    <a data-cta="zalo" href="#" class="btn-cta btn-cta--zalo" style="flex:1; text-align:center;">Nhắn Zalo</a>
+                    <a data-cta="phone" href="#" class="btn-cta btn-cta--outline" style="flex:1; text-align:center;">Gọi tư vấn</a>
+                </div>
                 <p id="form-status" class="form-status" hidden></p>
             </form>
             <p style="margin-top: 16px; font-size: 0.9rem;">Cảnh báo: Chương trình ưu đãi sẽ tự động đóng khi đủ 50 thành viên.</p>
@@ -558,6 +799,37 @@
         </div>
     </section>
 
+    <!-- Liên hệ trực tiếp -->
+    <section id="contact" class="contact-section">
+        <div class="container text-center">
+            <h2 class="mb-4" style="font-size: 2.5rem;">Liên Hệ <span class="text-yellow">Tư Vấn Ngay</span></h2>
+            <p style="color: var(--text-muted); max-width: 560px; margin: 0 auto;">Chọn kênh thuận tiện nhất — đội ngũ hỗ trợ phản hồi trong giờ hành chính.</p>
+            <div class="contact-cards">
+                <div class="contact-card">
+                    <div class="contact-card-icon">📞</div>
+                    <h3>Gọi hotline</h3>
+                    <p><strong data-contact="phone" style="color: var(--accent-yellow); font-size: 1.25rem;">0901 234 567</strong></p>
+                    <a data-cta="phone" href="#" class="btn-cta btn-cta--outline">Gọi ngay</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-card-icon">💬</div>
+                    <h3>Zalo tư vấn</h3>
+                    <p>Chat trực tiếp, gửi ảnh danh mục để được review.</p>
+                    <a data-cta="zalo" href="#" class="btn-cta btn-cta--zalo">Nhắn Zalo</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-card-icon">✉️</div>
+                    <h3>Email</h3>
+                    <p><strong data-contact="email">hotro@stockvn.vn</strong></p>
+                    <a data-cta="email" href="#" class="btn-cta btn-cta--email">Gửi email</a>
+                </div>
+            </div>
+            <div class="cta-row" style="margin-top: 32px;">
+                <a data-cta="order" href="#register-form" class="btn-cta">Đặt hàng ngay</a>
+            </div>
+        </div>
+    </section>
+
     <!-- 10. Final CTA + P.S. -->
     <section class="final-cta">
         <div class="container final-content">
@@ -565,7 +837,11 @@
             <p class="mb-8" style="font-size: 1.2rem; color: #d1d5db; max-width: 700px; margin: 0 auto 40px;">
                 StockVN Premium là con đường ngắn nhất giúp bạn làm chủ thị trường, duy trì tỷ lệ thắng 82% và lợi nhuận trung bình 35%/năm mà không cần phải tự mày mò đau khổ.
             </p>
-            <a href="#register-form" class="btn-cta">Tham Gia Room VIP Trước Khi Đóng Cửa</a>
+            <div class="cta-row">
+                <a data-cta="order" href="#register-form" class="btn-cta">Đặt hàng ngay</a>
+                <a data-cta="zalo" href="#" class="btn-cta btn-cta--zalo">Nhắn Zalo</a>
+                <a data-cta="phone" href="#" class="btn-cta btn-cta--outline">Gọi ngay</a>
+            </div>
             
             <div class="guarantee">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -574,7 +850,24 @@
         </div>
     </section>
 
+    <!-- Bong bóng liên hệ góc phải -->
+    <div class="fab-bubbles" aria-label="Liên hệ nhanh">
+        <a data-cta="zalo" href="#" class="fab-bubble fab-bubble--zalo" aria-label="Nhắn Zalo">
+            <span class="fab-label">Nhắn Zalo</span>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.03 2 10.82c0 2.78 1.39 5.27 3.57 6.86L4.5 21.5l4.35-2.39c.97.27 2 .42 3.15.42 5.52 0 10-4.03 10-8.82S17.52 2 12 2z"/></svg>
+        </a>
+        <a data-cta="phone" href="#" class="fab-bubble fab-bubble--phone" aria-label="Gọi ngay">
+            <span class="fab-label">Gọi ngay</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </a>
+        <a data-cta="order" href="#register-form" class="fab-bubble fab-bubble--order" aria-label="Đặt hàng ngay">
+            <span class="fab-label">Đặt hàng ngay</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0"/></svg>
+        </a>
+    </div>
+
     <script src="config.js"></script>
+    <script src="js/contact.js"></script>
     <script src="js/form.js"></script>
 </body>
 </html>
