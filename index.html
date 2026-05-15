@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockVN Premium - Kênh Đầu Tư Chứng Khoán</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Be+Vietnam+Pro:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-black: #050505;
+            --bg-white: #ffffff;
+            --bg-gray: #121212;
+            --bg-card: #1a1a1a;
+            --accent-yellow: #facc15;
+            --accent-blue: #2563eb;
+            --text-light: #ffffff;
+            --text-dark: #000000;
+            --text-muted: #9ca3af;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-black);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, .brand-font {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 900;
+        }
+
+        .container {
+            max-width: 1000px; /* Funnels are usually narrow for better reading */
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        .text-center { text-align: center; }
+        .text-yellow { color: var(--accent-yellow); }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mb-8 { margin-bottom: 32px; }
+        
+        .btn-cta {
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+            padding: 18px 40px;
+            border-radius: var(--radius-full);
+            font-size: 1.2rem;
+            font-weight: 900;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 30px rgba(250, 204, 21, 0.2);
+            text-transform: uppercase;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(250, 204, 21, 0.4);
+        }
+
+        /* 1. Hero Banner */
+        .hero {
+            padding: 100px 0 60px;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-bottom: 24px;
+        }
+        .hero-sub {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        /* 2. Social Proof Bar */
+        .social-proof {
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+            padding: 24px 0;
+            text-align: center;
+            font-weight: 700;
+        }
+        .proof-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .proof-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+        }
+
+        /* 3. Audience Call Out */
+        .pain-points {
+            background-color: var(--bg-gray);
+        }
+        .pain-card {
+            background-color: var(--bg-card);
+            border-left: 4px solid #ef4444;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        .pain-card h3 {
+            color: #ef4444;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* 4. Introduce Solution */
+        .solution-box {
+            border: 2px solid var(--accent-yellow);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            position: relative;
+        }
+        .solution-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-yellow);
+            color: var(--text-dark);
+            padding: 4px 16px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .check-list {
+            list-style: none;
+            margin-top: 24px;
+        }
+        .check-list li {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .check-list li::before {
+            content: '✓';
+            color: var(--accent-yellow);
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        /* 5. Show Expertise */
+        .expertise-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .expert-img {
+            width: 100%;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 6. Full Offer Stack */
+        .offer-stack {
+            background-color: var(--accent-blue);
+            color: var(--text-light);
+            text-align: center;
+            border-radius: var(--radius-lg);
+            padding: 60px 40px;
+        }
+        .stack-item {
+            background: rgba(0,0,0,0.2);
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .stack-value { color: #93c5fd; }
+        .total-value {
+            font-size: 1.5rem;
+            margin: 32px 0 16px;
+            text-decoration: line-through;
+            opacity: 0.8;
+        }
+        .today-price {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-yellow);
+            margin-bottom: 32px;
+            line-height: 1;
+        }
+
+        /* 7. Future Pacing */
+        .future-pacing {
+            text-align: center;
+            background-image: radial-gradient(circle at center, rgba(250, 204, 21, 0.1) 0%, transparent 70%);
+        }
+        .future-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #d1d5db;
+        }
+
+        /* 8. Testimonials */
+        .testi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .testi-card {
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: 16px;
+        }
+        .stars { color: var(--accent-yellow); margin-bottom: 16px; letter-spacing: 2px;}
+        .testi-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .author-img { width: 50px; height: 50px; border-radius: 50%; background: #444; }
+
+        /* 9. FAQs */
+        .faq-item {
+            background: var(--bg-card);
+            margin-bottom: 12px;
+            border-radius: 8px;
+            padding: 20px 24px;
+        }
+        .faq-q {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--accent-yellow);
+        }
+        .faq-a { color: var(--text-muted); }
+
+        /* 10. Final CTA */
+        .final-cta {
+            text-align: center;
+            padding: 100px 0;
+            background: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            position: relative;
+        }
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+        }
+        .final-content {
+            position: relative;
+            z-index: 10;
+        }
+        .guarantee {
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.2rem; }
+            .expertise-grid { grid-template-columns: 1fr; }
+            .proof-grid { flex-direction: column; gap: 16px; align-items: center; }
+            .stack-item { flex-direction: column; align-items: flex-start; gap: 8px;}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Hero Banner -->
+    <header class="hero container">
+        <div class="brand-font text-yellow mb-8" style="font-size:1.5rem; letter-spacing: 2px;">STOCKVN.</div>
+        <h1 class="hero-title">Làm Chủ Cổ Phiếu<br><span class="text-yellow">Nhân Đôi Tài Khoản</span></h1>
+        <p class="hero-sub">Hệ thống tín hiệu VIP chứng khoán thực chiến: Loại bỏ hoàn toàn cảm xúc, tối đa hóa lợi nhuận ngay cả khi VN-Index biến động mạnh.</p>
+        <a href="#offer" class="btn-cta">Nhận Phím Hàng VIP Ngay</a>
+        <p style="margin-top: 16px; font-size: 0.9rem; color: var(--text-muted);">*Chỉ còn 12 suất ưu đãi trong tháng này</p>
+    </header>
+
+    <!-- 2. Social Proof Bar -->
+    <div class="social-proof">
+        <div class="container proof-grid">
+            <div class="proof-item">✦ 10,000+ Nhà Đầu Tư Theo Dõi</div>
+            <div class="proof-item">✦ Winrate 82% Chu Kỳ Bull/Bear</div>
+            <div class="proof-item">✦ Lợi Nhuận TB 35%/Năm</div>
+        </div>
+    </div>
+
+    <!-- 3. Audience Call Out -->
+    <section class="pain-points">
+        <div class="container">
+            <h2 class="text-center mb-8" style="font-size: 2.5rem;">Bạn Có Đang "Đốt Tiền" Trên Thị Trường Vì...</h2>
+            
+            <div class="pain-card">
+                <h3>✘ Đu Đỉnh, Bán Đáy</h3>
+                <p>Bạn thường xuyên mua fomo khi thấy nhóm chat hô hào cổ phiếu đã chạy trần, và hoảng loạn cắt lỗ đúng ngay chân sóng khi thị trường rũ bỏ.</p>
+            </div>
+            
+            <div class="pain-card">
+                <h3>✘ Loạn Thông Tin & Môi Giới</h3>
+                <p>Bạn ở trong hàng chục room Zalo, mỗi người phím một mã. Bạn mua theo nhưng khi thị trường sập thì không ai báo điểm bán, để bạn tự bơi.</p>
+            </div>
+            
+            <div class="pain-card">
+                <h3>✘ Gồng Lỗ Bất Lực</h3>
+                <p>Tài khoản đang âm 30-50%, bạn không biết cách cơ cấu lại danh mục, đành "tắt app" và chuyển sang đầu tư dài hạn một cách bất đắc dĩ.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Introduce Your Solution -->
+    <section class="container">
+        <div class="solution-box">
+            <div class="solution-badge">ĐÂY LÀ GIẢI PHÁP DÀNH CHO BẠN</div>
+            <h2 class="text-center mb-4" style="font-size: 2.5rem;">Đã Đến Lúc <span class="text-yellow">Đầu Tư</span><br>Thay Vì Đánh Bạc</h2>
+            <p class="text-center" style="color:var(--text-muted); font-size:1.1rem;">StockVN Premium mang đến cho bạn lộ trình đầu tư bài bản, nơi lợi nhuận sinh ra từ kỷ luật và phương pháp, không phải do may rủi.</p>
+            
+            <ul class="check-list">
+                <li><strong>Điểm Mua/Bán Cực Chuẩn:</strong> Có rõ vùng mua (Entry), giá mục tiêu (Target) và điểm cắt lỗ (Cutloss) chi tiết tới từng line giá.</li>
+                <li><strong>Phân Tích Vĩ Mô & Dòng Tiền:</strong> Nắm bắt chính xác dòng tiền thông minh đang chảy vào nhóm ngành nào trước khi thị trường mở cửa.</li>
+                <li><strong>Quản Trị Rủi Ro Chuyên Nghiệp:</strong> Tuân thủ quy tắc đi vốn, giới hạn rủi ro dưới 5% cho mỗi lệnh để bảo vệ tài khoản tuyệt đối.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 5. Show Expertise -->
+    <section class="container expertise-grid">
+        <div>
+            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Chuyên gia phân tích" class="expert-img">
+        </div>
+        <div>
+            <h2 class="mb-4" style="font-size: 2.2rem;">Tại Sao Hàng Ngàn NĐT Chọn StockVN?</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 24px;">Đội ngũ của chúng tôi là các cựu Trưởng phòng phân tích từ các CTCK lớn (SSI, VNDirect...), với hơn 10 năm kinh nghiệm chinh chiến qua mọi chu kỳ sập mạnh và bùng nổ của VN-Index.</p>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">Chúng tôi đã mất tiền, đổ máu trên thị trường để đúc kết ra công thức chiến thắng này. Giờ đây, bạn không cần phải trả giá bằng tiền mặt nữa, bạn chỉ cần "đứng trên vai người khổng lồ" để đi đường tắt đến thành công.</p>
+        </div>
+    </section>
+
+    <!-- 6. Full Offer Stack -->
+    <section id="offer" class="container">
+        <div class="offer-stack">
+            <h2 class="mb-8" style="font-size: 2.5rem;">Bạn Sẽ Nhận Được Gì Khi Vào Room VIP?</h2>
+            
+            <div class="stack-item">
+                <span>1. Tín Hiệu Lướt Sóng & Trung Hạn Real-time</span>
+                <span class="stack-value">Trị giá 5,000,000đ</span>
+            </div>
+            <div class="stack-item">
+                <span>2. Báo Cáo Phân Tích Doanh Nghiệp Hàng Tuần</span>
+                <span class="stack-value">Trị giá 2,000,000đ</span>
+            </div>
+            <div class="stack-item">
+                <span>3. Review Khám & Cơ Cấu Danh Mục 1-1 Mỗi Tháng</span>
+                <span class="stack-value">Trị giá 3,000,000đ</span>
+            </div>
+            <div class="stack-item">
+                <span>4. Khoá Học "Đầu Tư F0 Thực Chiến" (Video)</span>
+                <span class="stack-value">Trị giá 4,000,000đ</span>
+            </div>
+
+            <div class="total-value">Tổng Giá Trị: 14,000,000đ / Năm</div>
+            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 8px;">Mức Giá Ưu Đãi Hôm Nay:</div>
+            <div class="today-price">Chỉ Bằng 1 Ly Cafe / Ngày</div>
+            
+            <a href="#" class="btn-cta" style="background:var(--text-dark); color:var(--accent-yellow);">Đăng Ký Vào Room VIP Ngay</a>
+            <p style="margin-top: 16px; font-size: 0.9rem;">Cảnh báo: Chương trình ưu đãi sẽ tự động đóng khi đủ 50 thành viên.</p>
+        </div>
+    </section>
+
+    <!-- 7. Future Pacing -->
+    <section class="future-pacing">
+        <div class="container">
+            <h2 class="mb-4" style="font-size: 2.5rem;">Tưởng Tượng Cảm Giác <span class="text-yellow">Đầu Tư Thảnh Thơi...</span></h2>
+            <p class="future-text">
+                Không còn cảnh phải dán mắt vào bảng điện xanh đỏ đến hoa mắt. Không còn giật mình thon thót mỗi khi thị trường biến động mạnh. 
+                Bạn hoàn toàn thảnh thơi tập trung cho công việc chính, đi cafe, du lịch cùng gia đình... trong khi tài khoản chứng khoán vẫn tự động gia tăng bền vững nhờ những điểm mua chuẩn xác đã được chuyên gia phân tích sẵn cho bạn. Đầu tư là để tận hưởng cuộc sống!
+            </p>
+        </div>
+    </section>
+
+    <!-- 8. Testimonials -->
+    <section class="container">
+        <h2 class="text-center mb-8" style="font-size: 2.5rem;">Họ Đã Thay Đổi Tài Khoản Thế Nào?</h2>
+        <div class="testi-grid">
+            <div class="testi-card">
+                <div class="stars">★★★★★</div>
+                <p>"Từ âm 40% do đu đỉnh năm ngoái, tôi đã về bờ và lãi ngược 15% sau 4 tháng theo sát lệnh trong Room VIP. Phân tích rất có tâm và điểm cắt lỗ cực kỳ dứt khoát."</p>
+                <div class="testi-author">
+                    <img src="https://i.pravatar.cc/100?img=11" class="author-img" alt="User">
+                    <div>
+                        <strong>Anh Hoàng Phúc</strong><br>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Kinh doanh tự do</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testi-card">
+                <div class="stars">★★★★★</div>
+                <p>"Trước đây tôi theo 5-6 room Zalo loạn hết cả lên. Từ khi vào StockVN, tôi chỉ mua đúng 3 mã admin phím, tuân thủ đúng tỷ trọng và giờ tài khoản tăng trưởng rất đều."</p>
+                <div class="testi-author">
+                    <img src="https://i.pravatar.cc/100?img=5" class="author-img" alt="User">
+                    <div>
+                        <strong>Chị Ngọc Mai</strong><br>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Nhân viên văn phòng</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testi-card">
+                <div class="stars">★★★★★</div>
+                <p>"Rất thích phần hỗ trợ cơ cấu danh mục 1-1. Team đã giúp tôi dọn dẹp đống rác cổ phiếu Penny và tập trung tiền vào sóng ngành Dầu khí vừa rồi ăn trọn 30%."</p>
+                <div class="testi-author">
+                    <img src="https://i.pravatar.cc/100?img=8" class="author-img" alt="User">
+                    <div>
+                        <strong>Anh Tuấn Kiệt</strong><br>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Kỹ sư IT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. FAQs -->
+    <section class="container" style="max-width: 800px;">
+        <h2 class="text-center mb-8" style="font-size: 2.5rem;">Câu Hỏi Thường Gặp</h2>
+        
+        <div class="faq-item">
+            <div class="faq-q">1. Tôi là người mới (F0) chưa biết gì thì có tham gia được không?</div>
+            <div class="faq-a">Hoàn toàn được. Khi đăng ký, bạn sẽ được tặng kèm Khoá học F0 Thực Chiến bằng video để nắm kiến thức cơ bản. Các lệnh bắn vào nhóm đều ghi rõ giá mua/bán rất dễ hiểu để bạn thao tác theo.</div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-q">2. Số vốn tối thiểu để đầu tư theo nhóm là bao nhiêu?</div>
+            <div class="faq-a">Không có giới hạn tối thiểu. Dù vốn 10 triệu hay 10 tỷ, tỷ suất sinh lời tính theo phần trăm (%) là như nhau. Tuy nhiên, mức vốn lý tưởng để cơ cấu danh mục dễ dàng là từ 50 triệu VNĐ trở lên.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">3. Tín hiệu được gửi qua nền tảng nào?</div>
+            <div class="faq-a">Toàn bộ tín hiệu, báo cáo và nhận định thị trường sẽ được gửi qua Zalo Group VIP và kênh Telegram nội bộ để đảm bảo tốc độ real-time nhanh nhất.</div>
+        </div>
+    </section>
+
+    <!-- 10. Final CTA + P.S. -->
+    <section class="final-cta">
+        <div class="container final-content">
+            <h2 class="mb-4" style="font-size: 3rem;">Đừng Để Tiền Của Bạn<br>Bốc Hơi Thêm Nữa</h2>
+            <p class="mb-8" style="font-size: 1.2rem; color: #d1d5db; max-width: 700px; margin: 0 auto 40px;">
+                StockVN Premium là con đường ngắn nhất giúp bạn làm chủ thị trường, duy trì tỷ lệ thắng 82% và lợi nhuận trung bình 35%/năm mà không cần phải tự mày mò đau khổ.
+            </p>
+            <a href="#offer" class="btn-cta">Tham Gia Room VIP Trước Khi Đóng Cửa</a>
+            
+            <div class="guarantee">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Cam kết hoàn trả 100% phí tham gia trong 30 ngày nếu bạn không hài lòng về chất lượng.
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>
