@@ -723,6 +723,26 @@
                 </div>
                 <p id="form-status" class="form-status" hidden></p>
             </form>
+
+            <!-- QR thanh toán — hiện sau khi form submit thành công -->
+            <div id="payment-section" hidden style="margin-top:28px; background:rgba(0,0,0,0.35); border-radius:16px; padding:28px 24px; text-align:center; border:2px solid rgba(250,204,21,0.35);">
+                <div style="font-size:2.2rem; margin-bottom:8px;">✅</div>
+                <h3 style="font-family:'Be Vietnam Pro',sans-serif; font-size:1.2rem; margin-bottom:6px;">Đăng ký thành công!</h3>
+                <p style="color:rgba(255,255,255,0.65); font-size:0.9rem; margin-bottom:20px;">Chuyển khoản theo QR bên dưới để giữ suất của bạn.</p>
+
+                <img id="payment-qr" src="" alt="QR thanh toán MSB"
+                     style="width:210px; height:210px; border-radius:12px; background:#fff; padding:8px; display:block; margin:0 auto 20px;">
+
+                <div style="background:rgba(0,0,0,0.25); border-radius:10px; padding:16px 18px; text-align:left; font-size:0.9rem; line-height:2.1;">
+                    <div><span style="color:rgba(255,255,255,0.55);">Ngân hàng:</span> &nbsp;<strong>MSB</strong></div>
+                    <div><span style="color:rgba(255,255,255,0.55);">Số tài khoản:</span> &nbsp;<strong>04001010676388</strong></div>
+                    <div><span style="color:rgba(255,255,255,0.55);">Nội dung CK:</span> &nbsp;<strong id="payment-desc" style="color:#facc15;">NEXUSVIP</strong></div>
+                </div>
+
+                <p style="margin-top:16px; font-size:0.82rem; color:rgba(255,255,255,0.5);">
+                    Sau khi chuyển khoản, team sẽ liên hệ xác nhận trong vòng 1 giờ.
+                </p>
+            </div>
             <p style="margin-top: 16px; font-size: 0.9rem;">Cảnh báo: Chương trình ưu đãi sẽ tự động đóng khi đủ 50 thành viên.</p>
         </div>
     </section>

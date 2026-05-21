@@ -53,7 +53,20 @@
             }
 
             form.reset();
-            setStatus('Đã gửi thành công! Chúng tôi sẽ liên hệ bạn sớm.', 'success');
+            setStatus('Đã nhận thông tin! Vui lòng chuyển khoản bên dưới để giữ suất.', 'success');
+
+            // Hiện QR thanh toán với nội dung CK gắn tên khách
+            var desc = 'NEXUSVIP ' + payload.name;
+            var qrImg    = document.getElementById('payment-qr');
+            var descEl   = document.getElementById('payment-desc');
+            var paySection = document.getElementById('payment-section');
+            if (qrImg && descEl && paySection) {
+                descEl.textContent = desc;
+                qrImg.src = 'https://qr.sepay.vn/img?acc=04001010676388&bank=MSB&des='
+                            + encodeURIComponent(desc);
+                paySection.removeAttribute('hidden');
+                paySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         } catch (err) {
             setStatus('Gửi thất bại. Kiểm tra URL Webhook trên Make.com và thử lại.', 'error');
             console.error('Webhook error:', err);
