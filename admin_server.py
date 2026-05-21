@@ -9,10 +9,50 @@ from datetime import datetime
 from flask import Flask, jsonify, request, send_from_directory, abort
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, 'brain.db')
+_data_dir = os.environ.get('DATA_DIR', BASE_DIR)
+DB_PATH = os.path.join(_data_dir, 'brain.db')
 ADMIN_DIR = os.path.join(BASE_DIR, 'admin')
 
 app = Flask(__name__)
+
+
+def init_db():
+    os.makedirs(_data_dir, exist_ok=True)
+    with sqlite3.connect(DB_PATH) as conn:
+        conn.executescript("""
+            CREATE TABLE IF NOT EXISTS products (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                name             TEXT    NOT NULL,
+                price            INTEGER NOT NULL DEFAULT 0,
+                description      TEXT,
+                slots_remaining  INTEGER DEFAULT NULL,
+                is_active        INTEGER DEFAULT 1,
+                created_at       TEXT
+            );
+            CREATE TABLE IF NOT EXISTS customers (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                name          TEXT NOT NULL,
+                phone         TEXT UNIQUE,
+                zalo          TEXT,
+                email         TEXT,
+                service       TEXT DEFAULT '',
+                source        TEXT DEFAULT 'website',
+                registered_at TEXT,
+                note          TEXT
+            );
+            CREATE TABLE IF NOT EXISTS orders (
+                id           INTEGER PRIMARY KEY AUTOINCREMENT,
+                customer_id  INTEGER NOT NULL REFERENCES customers(id),
+                product_id   INTEGER NOT NULL REFERENCES products(id),
+                amount       INTEGER NOT NULL DEFAULT 0,
+                status       TEXT NOT NULL DEFAULT 'pending',
+                payment_ref  TEXT,
+                ordered_at   TEXT,
+                paid_at      TEXT,
+                note         TEXT
+            );
+        """)
+        conn.commit()
 
 
 @app.after_request
@@ -392,6 +432,8 @@ def stats():
         'slots_remaining': slots[0] if slots else 0
     })
 
+
+init_db()
 
 if __name__ == '__main__':
     os.makedirs(ADMIN_DIR, exist_ok=True)
