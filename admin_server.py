@@ -136,8 +136,25 @@ def create_customer():
                  d.get('email', ''), d.get('service', ''),
                  d.get('source', 'admin'), now, d.get('note', ''))
             )
+            customer_id = cur.lastrowid
+            # Auto-create pending order for website registrations
+            if d.get('source') == 'website' and d.get('service'):
+                product = conn.execute(
+                    "SELECT * FROM products WHERE name LIKE ? AND is_active=1 LIMIT 1",
+                    ('%' + d.get('service') + '%',)
+                ).fetchone()
+                if product:
+                    conn.execute(
+                        'INSERT INTO orders (customer_id, product_id, amount, status, payment_ref, ordered_at, note) '
+                        'VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        (customer_id, product['id'], product['price'], 'pending', '', now, 'Đăng ký từ website')
+                    )
+                    conn.execute(
+                        'UPDATE products SET slots_remaining = MAX(0, slots_remaining - 1) WHERE id=?',
+                        (product['id'],)
+                    )
             conn.commit()
-            row = conn.execute('SELECT * FROM customers WHERE id=?', (cur.lastrowid,)).fetchone()
+            row = conn.execute('SELECT * FROM customers WHERE id=?', (customer_id,)).fetchone()
         return jsonify(row_to_dict(row)), 201
     except sqlite3.IntegrityError:
         return jsonify({'error': 'Số điện thoại đã tồn tại'}), 409
@@ -336,6 +353,25 @@ def sepay_webhook():
 
     print(f'[Sepay] {transaction_date} | {amount:,}đ | "{content}" | customer_id={customer_id}')
     return jsonify({'success': True})
+
+
+# ── Payment status (polling từ frontend) ────────────────────────────────────
+
+@app.route('/api/payment-status', methods=['GET'])
+def payment_status():
+    phone = request.args.get('phone', '').strip()
+    if not phone:
+        return jsonify({'status': 'unknown'})
+    with get_db() as conn:
+        row = conn.execute('''
+            SELECT o.status FROM orders o
+            JOIN customers c ON c.id = o.customer_id
+            WHERE c.phone = ?
+            ORDER BY o.id DESC LIMIT 1
+        ''', (phone,)).fetchone()
+    if not row:
+        return jsonify({'status': 'pending'})
+    return jsonify({'status': row['status']})
 
 
 # ── Stats ────────────────────────────────────────────────────────────────────

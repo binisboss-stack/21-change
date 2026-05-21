@@ -80,6 +80,24 @@
                             + encodeURIComponent(desc);
                 paySection.removeAttribute('hidden');
                 paySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Polling kiểm tra thanh toán mỗi 4 giây
+                var pollCount = 0;
+                var pollInterval = setInterval(function () {
+                    pollCount++;
+                    if (pollCount > 75) { clearInterval(pollInterval); return; } // dừng sau 5 phút
+                    fetch(adminUrl + '/api/payment-status?phone=' + encodeURIComponent(payload.phone))
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            if (data.status === 'paid' || data.status === 'success') {
+                                clearInterval(pollInterval);
+                                paySection.setAttribute('hidden', '');
+                                setStatus('Thanh toán thành công! Cảm ơn bạn đã đăng ký. Chúng tôi sẽ liên hệ sớm nhất.', 'success');
+                                document.getElementById('form-status').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        })
+                        .catch(function () {});
+                }, 4000);
             }
         } catch (err) {
             setStatus('Gửi thất bại. Kiểm tra URL Webhook trên Make.com và thử lại.', 'error');
