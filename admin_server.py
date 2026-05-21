@@ -359,5 +359,7 @@ def stats():
 
 if __name__ == '__main__':
     os.makedirs(ADMIN_DIR, exist_ok=True)
-    print('Admin panel: http://localhost:5000/admin')
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') != 'production'
+    print(f'Admin panel: http://localhost:{port}/admin')
+    app.run(host='0.0.0.0', debug=debug, port=port)
