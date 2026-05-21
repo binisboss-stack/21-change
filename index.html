@@ -705,16 +705,21 @@
                     <input type="text" id="name" name="name" required placeholder="Nguyễn Văn A">
                 </div>
                 <div class="form-group">
-                    <label for="phone">Số điện thoại / Zalo *</label>
+                    <label for="phone">Số điện thoại *</label>
                     <input type="tel" id="phone" name="phone" required placeholder="09xx xxx xxx">
                 </div>
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="email@example.com">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" required placeholder="email@example.com">
                 </div>
                 <div class="form-group">
-                    <label for="message">Ghi chú (tuỳ chọn)</label>
-                    <textarea id="message" name="message" placeholder="Vốn đầu tư, kinh nghiệm..."></textarea>
+                    <label for="service">Dịch vụ quan tâm *</label>
+                    <select id="service" name="service" required style="width:100%; padding:12px 14px; background:var(--bg-card,#1a1a1a); border:1.5px solid rgba(250,204,21,0.25); border-radius:10px; color:var(--text-primary,#f1f5f9); font-size:15px; appearance:none; cursor:pointer;">
+                        <option value="" disabled selected>— Chọn dịch vụ —</option>
+                        <option value="PDF Checklist">PDF Checklist — SL/TP XAUUSD</option>
+                        <option value="Notion Template">Notion Template — Trading Journal</option>
+                        <option value="Video 20 phút + Cheat Sheet">Video 20 phút + Cheat Sheet</option>
+                    </select>
                 </div>
                 <button type="submit" class="btn-cta btn-submit" style="background:var(--text-dark); color:var(--accent-yellow);">Đặt hàng ngay</button>
                 <div class="cta-row" style="margin-top: 16px;">

@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — NEXUS VIP</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f0f;
+    --bg2: #1a1a1a;
+    --bg3: #252525;
+    --border: #333;
+    --yellow: #facc15;
+    --yellow-dim: rgba(250,204,21,0.15);
+    --text: #e5e5e5;
+    --text-dim: #888;
+    --red: #ef4444;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --orange: #f97316;
+    --radius: 10px;
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; font-size: 14px; min-height: 100vh; }
+
+  /* Header */
+  .header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
+  .header h1 { font-size: 18px; font-weight: 700; color: var(--yellow); }
+  .header .subtitle { color: var(--text-dim); font-size: 12px; }
+
+  /* Stats bar */
+  .stats { display: flex; gap: 12px; padding: 16px 24px; flex-wrap: wrap; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; min-width: 140px; flex: 1; }
+  .stat-card .val { font-size: 26px; font-weight: 700; color: var(--yellow); }
+  .stat-card .lbl { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 2px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--bg2); }
+  .tab { padding: 12px 22px; cursor: pointer; color: var(--text-dim); font-weight: 600; border-bottom: 3px solid transparent; transition: all .2s; font-size: 13px; }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+
+  /* Content */
+  .content { padding: 20px 24px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Toolbar */
+  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .toolbar h2 { font-size: 16px; font-weight: 700; flex: 1; }
+  .search-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 12px; color: var(--text); font-size: 13px; width: 220px; outline: none; }
+  .search-box:focus { border-color: var(--yellow); }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; transition: opacity .15s; }
+  .btn:hover { opacity: .85; }
+  .btn-primary { background: var(--yellow); color: #000; }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-ghost { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+  .btn-sm { padding: 4px 10px; font-size: 12px; border-radius: 6px; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--bg3); }
+  th { padding: 11px 14px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-dim); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,.03); }
+  .td-actions { display: flex; gap: 6px; white-space: nowrap; }
+
+  /* Badges */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+  .badge-pending { background: rgba(249,115,22,.2); color: var(--orange); }
+  .badge-paid { background: rgba(34,197,94,.2); color: var(--green); }
+  .badge-cancelled { background: rgba(239,68,68,.2); color: var(--red); }
+  .badge-active { background: rgba(250,204,21,.15); color: var(--yellow); }
+  .badge-inactive { background: var(--bg3); color: var(--text-dim); }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 48px; color: var(--text-dim); }
+  .empty svg { opacity: .3; margin-bottom: 12px; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; }
+  .modal-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; }
+  .modal-header h3 { font-size: 16px; font-weight: 700; }
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+  .modal-footer { padding: 0 24px 20px; display: flex; gap: 10px; justify-content: flex-end; }
+  .close-btn { background: none; border: none; cursor: pointer; color: var(--text-dim); padding: 4px; font-size: 20px; line-height: 1; }
+  .close-btn:hover { color: var(--text); }
+
+  /* Form fields */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+  .field input, .field textarea, .field select {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; color: var(--text); font-size: 13px; outline: none;
+    transition: border-color .15s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--yellow); }
+  .field textarea { resize: vertical; min-height: 80px; }
+  .field select option { background: var(--bg2); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .err-msg { color: var(--red); font-size: 12px; background: rgba(239,68,68,.1); padding: 8px 12px; border-radius: 6px; display: none; }
+  .err-msg.show { display: block; }
+
+  /* Toast */
+  .toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .toast { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 18px; font-size: 13px; animation: slideUp .2s ease; white-space: nowrap; }
+  .toast.success { border-color: var(--green); color: var(--green); }
+  .toast.error { border-color: var(--red); color: var(--red); }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Confirm dialog */
+  .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.75); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .confirm-overlay.open { opacity: 1; pointer-events: all; }
+  .confirm-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 24px; width: 100%; max-width: 360px; text-align: center; }
+  .confirm-box p { color: var(--text-dim); margin: 8px 0 20px; font-size: 13px; }
+  .confirm-box .btn-row { display: flex; gap: 10px; justify-content: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>NEXUS VIP — Admin Panel</h1>
+    <div class="subtitle">Quản lý sản phẩm · khách hàng · đơn hàng</div>
+  </div>
+  <a href="/" class="btn btn-ghost btn-sm" style="margin-left:auto">← Về trang chủ</a>
+</div>
+
+<div class="stats" id="stats-bar">
+  <div class="stat-card"><div class="val" id="s-customers">—</div><div class="lbl">Khách hàng</div></div>
+  <div class="stat-card"><div class="val" id="s-orders">—</div><div class="lbl">Đơn hàng</div></div>
+  <div class="stat-card"><div class="val" id="s-paid">—</div><div class="lbl">Đã thanh toán</div></div>
+  <div class="stat-card"><div class="val" id="s-revenue">—</div><div class="lbl">Doanh thu (VNĐ)</div></div>
+  <div class="stat-card"><div class="val" id="s-slots">—</div><div class="lbl">Slot còn lại</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="products">Sản phẩm</div>
+  <div class="tab" data-tab="customers">Khách hàng</div>
+  <div class="tab" data-tab="orders">Đơn hàng</div>
+</div>
+
+<div class="content">
+
+  <!-- PRODUCTS -->
+  <div class="panel active" id="panel-products">
+    <div class="toolbar">
+      <h2>Sản phẩm</h2>
+      <button class="btn btn-primary" onclick="openProductModal()">+ Thêm sản phẩm</button>
+    </div>
+    <div class="table-wrap">
+      <table id="products-table">
+        <thead><tr>
+          <th>ID</th><th>Tên sản phẩm</th><th>Giá</th><th>Slot còn</th><th>Trạng thái</th><th>Ngày tạo</th><th></th>
+        </tr></thead>
+        <tbody id="products-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CUSTOMERS -->
+  <div class="panel" id="panel-customers">
+    <div class="toolbar">
+      <h2>Khách hàng</h2>
+      <input class="search-box" id="customer-search" placeholder="Tìm tên, SĐT..." oninput="filterCustomers()">
+      <button class="btn btn-primary" onclick="openCustomerModal()">+ Thêm khách</button>
+    </div>
+    <div class="table-wrap">
+      <table id="customers-table">
+        <thead><tr>
+          <th>ID</th><th>Họ tên</th><th>SĐT</th><th>Email</th><th>Dịch vụ</th><th>Nguồn</th><th>Ngày đăng ký</th><th>Ghi chú</th><th></th>
+        </tr></thead>
+        <tbody id="customers-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ORDERS -->
+  <div class="panel" id="panel-orders">
+    <div class="toolbar">
+      <h2>Đơn hàng</h2>
+      <input class="search-box" id="order-search" placeholder="Tìm tên khách..." oninput="filterOrders()">
+      <button class="btn btn-primary" onclick="openOrderModal()">+ Thêm đơn</button>
+    </div>
+    <div class="table-wrap">
+      <table id="orders-table">
+        <thead><tr>
+          <th>ID</th><th>Khách hàng</th><th>SĐT</th><th>Sản phẩm</th><th>Số tiền</th><th>Trạng thái</th><th>Mã CK</th><th>Ngày mua</th><th>Ngày TT</th><th>Ghi chú</th><th></th>
+        </tr></thead>
+        <tbody id="orders-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="product-modal-title">Thêm sản phẩm</h3>
+      <button class="close-btn" onclick="closeModal('product-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="err-msg" id="product-err"></div>
+      <div class="field"><label>Tên sản phẩm *</label><input id="p-name" placeholder="VD: NEXUS VIP GROUP"></div>
+      <div class="field-row">
+        <div class="field"><label>Giá (VNĐ)</label><input id="p-price" type="number" value="0" min="0"></div>
+        <div class="field"><label>Slot còn lại</label><input id="p-slots" type="number" value="50" min="0"></div>
+      </div>
+      <div class="field"><label>Mô tả</label><textarea id="p-desc"></textarea></div>
+      <div class="field"><label>Trạng thái</label>
+        <select id="p-active"><option value="1">Đang mở bán</option><option value="0">Tạm dừng</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('product-modal')">Huỷ</button>
+      <button class="btn btn-primary" onclick="saveProduct()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOMER MODAL -->
+<div class="modal-overlay" id="customer-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="customer-modal-title">Thêm khách hàng</h3>
+      <button class="close-btn" onclick="closeModal('customer-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="err-msg" id="customer-err"></div>
+      <div class="field-row">
+        <div class="field"><label>Họ tên *</label><input id="c-name" placeholder="Nguyễn Văn A"></div>
+        <div class="field"><label>SĐT *</label><input id="c-phone" placeholder="0901234567"></div>
+      </div>
+      <div class="field"><label>Email *</label><input id="c-email" type="email" placeholder="abc@gmail.com"></div>
+      <div class="field"><label>Dịch vụ quan tâm *</label>
+        <select id="c-service">
+          <option value="">— Chọn dịch vụ —</option>
+          <option value="PDF Checklist">PDF Checklist — SL/TP XAUUSD</option>
+          <option value="Notion Template">Notion Template — Trading Journal</option>
+          <option value="Video 20 phút + Cheat Sheet">Video 20 phút + Cheat Sheet</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Zalo</label><input id="c-zalo" placeholder="SĐT Zalo"></div>
+        <div class="field"><label>Nguồn</label>
+          <select id="c-source">
+            <option value="website">Website</option>
+            <option value="facebook">Facebook</option>
+            <option value="zalo">Zalo</option>
+            <option value="referral">Giới thiệu</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Ghi chú</label><textarea id="c-note" rows="2"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('customer-modal')">Huỷ</button>
+      <button class="btn btn-primary" onclick="saveCustomer()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="modal-overlay" id="order-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="order-modal-title">Thêm đơn hàng</h3>
+      <button class="close-btn" onclick="closeModal('order-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="err-msg" id="order-err"></div>
+      <div class="field"><label>Khách hàng *</label>
+        <select id="o-customer"><option value="">— Chọn khách —</option></select>
+      </div>
+      <div class="field"><label>Sản phẩm *</label>
+        <select id="o-product"><option value="">— Chọn sản phẩm —</option></select>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Số tiền (VNĐ)</label><input id="o-amount" type="number" value="0" min="0"></div>
+        <div class="field"><label>Trạng thái</label>
+          <select id="o-status">
+            <option value="pending">Chờ thanh toán</option>
+            <option value="paid">Đã thanh toán</option>
+            <option value="cancelled">Đã huỷ</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Mã chuyển khoản</label><input id="o-ref" placeholder="VD: NEXUSVIP Nguyễn Văn A"></div>
+      <div class="field"><label>Ghi chú</label><textarea id="o-note" rows="2"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('order-modal')">Huỷ</button>
+      <button class="btn btn-primary" onclick="saveOrder()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <strong id="confirm-title">Xác nhận xoá</strong>
+    <p id="confirm-msg">Bạn chắc chắn muốn xoá?</p>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Huỷ</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">Xoá</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const API = 'http://localhost:5000';
+let products = [], customers = [], orders = [];
+let editingId = { product: null, customer: null, order: null };
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ── Confirm ───────────────────────────────────────────────────────────────────
+let _confirmCb = null;
+function confirm(msg, cb) {
+  document.getElementById('confirm-msg').textContent = msg;
+  document.getElementById('confirm-overlay').classList.add('open');
+  _confirmCb = cb;
+  document.getElementById('confirm-ok-btn').onclick = () => { closeConfirm(); cb(); };
+}
+function closeConfirm() {
+  document.getElementById('confirm-overlay').classList.remove('open');
+}
+
+// ── Modals ────────────────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) closeModal(el.id); });
+});
+
+// ── API helpers ───────────────────────────────────────────────────────────────
+async function api(method, path, body) {
+  const res = await fetch(API + path, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error || 'Lỗi ' + res.status);
+  return json;
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+async function loadStats() {
+  const s = await api('GET', '/api/stats').catch(() => ({}));
+  document.getElementById('s-customers').textContent = s.total_customers ?? '—';
+  document.getElementById('s-orders').textContent = s.total_orders ?? '—';
+  document.getElementById('s-paid').textContent = s.paid_orders ?? '—';
+  document.getElementById('s-revenue').textContent = s.total_revenue != null ? s.total_revenue.toLocaleString('vi-VN') : '—';
+  document.getElementById('s-slots').textContent = s.slots_remaining ?? '—';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PRODUCTS
+// ─────────────────────────────────────────────────────────────────────────────
+async function loadProducts() {
+  products = await api('GET', '/api/products');
+  renderProducts();
+}
+
+function renderProducts() {
+  const tb = document.getElementById('products-tbody');
+  if (!products.length) {
+    tb.innerHTML = '<tr><td colspan="7"><div class="empty">Chưa có sản phẩm nào</div></td></tr>';
+    return;
+  }
+  tb.innerHTML = products.map(p => `
+    <tr>
+      <td>${p.id}</td>
+      <td><strong>${esc(p.name)}</strong></td>
+      <td>${p.price ? p.price.toLocaleString('vi-VN') + ' ₫' : '<span style="color:var(--text-dim)">Miễn phí</span>'}</td>
+      <td><strong style="color:${p.slots_remaining > 5 ? 'var(--green)' : 'var(--red)'}">${p.slots_remaining}</strong></td>
+      <td><span class="badge ${p.is_active ? 'badge-active' : 'badge-inactive'}">${p.is_active ? 'Đang bán' : 'Dừng'}</span></td>
+      <td style="color:var(--text-dim)">${p.created_at || ''}</td>
+      <td><div class="td-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editProduct(${p.id})">Sửa</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${p.id},'${esc(p.name)}')">Xoá</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openProductModal(p = null) {
+  editingId.product = p ? p.id : null;
+  document.getElementById('product-modal-title').textContent = p ? 'Sửa sản phẩm' : 'Thêm sản phẩm';
+  document.getElementById('p-name').value = p?.name || '';
+  document.getElementById('p-price').value = p?.price || 0;
+  document.getElementById('p-slots').value = p?.slots_remaining ?? 50;
+  document.getElementById('p-desc').value = p?.description || '';
+  document.getElementById('p-active').value = String(p?.is_active ?? 1);
+  document.getElementById('product-err').classList.remove('show');
+  openModal('product-modal');
+}
+
+function editProduct(id) { openProductModal(products.find(p => p.id === id)); }
+
+async function saveProduct() {
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) { showErr('product-err', 'Vui lòng nhập tên sản phẩm'); return; }
+  const body = {
+    name,
+    price: parseInt(document.getElementById('p-price').value) || 0,
+    slots_remaining: parseInt(document.getElementById('p-slots').value) || 0,
+    description: document.getElementById('p-desc').value.trim(),
+    is_active: parseInt(document.getElementById('p-active').value)
+  };
+  try {
+    if (editingId.product) {
+      await api('PUT', `/api/products/${editingId.product}`, body);
+      toast('Đã cập nhật sản phẩm');
+    } else {
+      await api('POST', '/api/products', body);
+      toast('Đã thêm sản phẩm');
+    }
+    closeModal('product-modal');
+    await loadProducts();
+    loadStats();
+  } catch (e) { showErr('product-err', e.message); }
+}
+
+async function deleteProduct(id, name) {
+  confirm(`Xoá sản phẩm "${name}"?`, async () => {
+    await api('DELETE', `/api/products/${id}`);
+    toast('Đã xoá sản phẩm', 'error');
+    await loadProducts();
+    loadStats();
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CUSTOMERS
+// ─────────────────────────────────────────────────────────────────────────────
+async function loadCustomers() {
+  customers = await api('GET', '/api/customers');
+  renderCustomers(customers);
+  populateCustomerSelect();
+}
+
+function renderCustomers(list) {
+  const tb = document.getElementById('customers-tbody');
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="9"><div class="empty">Chưa có khách hàng nào</div></td></tr>';
+    return;
+  }
+  const serviceColors = {
+    'PDF Checklist': '#3b82f6',
+    'Notion Template': '#a855f7',
+    'Video 20 phút + Cheat Sheet': '#facc15'
+  };
+  tb.innerHTML = list.map(c => `
+    <tr>
+      <td>${c.id}</td>
+      <td><strong>${esc(c.name)}</strong></td>
+      <td>${esc(c.phone || '')}</td>
+      <td style="color:var(--text-dim)">${esc(c.email || '')}</td>
+      <td>${c.service ? `<span class="badge" style="background:${serviceColors[c.service] ? serviceColors[c.service]+'22' : 'var(--bg3)'}; color:${serviceColors[c.service] || 'var(--text-dim)'}; white-space:nowrap">${esc(c.service)}</span>` : '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td style="color:var(--text-dim)">${esc(c.source || '')}</td>
+      <td style="color:var(--text-dim)">${c.registered_at || ''}</td>
+      <td style="color:var(--text-dim);max-width:120px;overflow:hidden;text-overflow:ellipsis">${esc(c.note || '')}</td>
+      <td><div class="td-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editCustomer(${c.id})">Sửa</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteCustomer(${c.id},'${esc(c.name)}')">Xoá</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filterCustomers() {
+  const q = document.getElementById('customer-search').value.toLowerCase();
+  renderCustomers(customers.filter(c =>
+    c.name.toLowerCase().includes(q) || (c.phone || '').includes(q)
+  ));
+}
+
+function openCustomerModal(c = null) {
+  editingId.customer = c ? c.id : null;
+  document.getElementById('customer-modal-title').textContent = c ? 'Sửa khách hàng' : 'Thêm khách hàng';
+  document.getElementById('c-name').value = c?.name || '';
+  document.getElementById('c-phone').value = c?.phone || '';
+  document.getElementById('c-email').value = c?.email || '';
+  document.getElementById('c-service').value = c?.service || '';
+  document.getElementById('c-zalo').value = c?.zalo || '';
+  document.getElementById('c-source').value = c?.source || 'website';
+  document.getElementById('c-note').value = c?.note || '';
+  document.getElementById('customer-err').classList.remove('show');
+  openModal('customer-modal');
+}
+
+function editCustomer(id) { openCustomerModal(customers.find(c => c.id === id)); }
+
+async function saveCustomer() {
+  const name = document.getElementById('c-name').value.trim();
+  const phone = document.getElementById('c-phone').value.trim();
+  if (!name || !phone) { showErr('customer-err', 'Vui lòng nhập Họ tên và SĐT'); return; }
+  const body = {
+    name, phone,
+    email: document.getElementById('c-email').value.trim(),
+    service: document.getElementById('c-service').value,
+    zalo: document.getElementById('c-zalo').value.trim(),
+    source: document.getElementById('c-source').value,
+    note: document.getElementById('c-note').value.trim()
+  };
+  try {
+    if (editingId.customer) {
+      await api('PUT', `/api/customers/${editingId.customer}`, body);
+      toast('Đã cập nhật khách hàng');
+    } else {
+      await api('POST', '/api/customers', body);
+      toast('Đã thêm khách hàng');
+    }
+    closeModal('customer-modal');
+    await loadCustomers();
+    loadStats();
+  } catch (e) { showErr('customer-err', e.message); }
+}
+
+async function deleteCustomer(id, name) {
+  confirm(`Xoá khách "${name}"?`, async () => {
+    await api('DELETE', `/api/customers/${id}`);
+    toast('Đã xoá khách hàng', 'error');
+    await loadCustomers();
+    loadStats();
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ORDERS
+// ─────────────────────────────────────────────────────────────────────────────
+function populateCustomerSelect() {
+  const sel = document.getElementById('o-customer');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Chọn khách —</option>' +
+    customers.map(c => `<option value="${c.id}">${esc(c.name)} (${esc(c.phone || '')})</option>`).join('');
+  if (cur) sel.value = cur;
+}
+
+function populateProductSelect() {
+  const sel = document.getElementById('o-product');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">— Chọn sản phẩm —</option>' +
+    products.map(p => `<option value="${p.id}">${esc(p.name)} (còn ${p.slots_remaining} slot)</option>`).join('');
+  if (cur) sel.value = cur;
+}
+
+async function loadOrders() {
+  orders = await api('GET', '/api/orders');
+  renderOrders(orders);
+}
+
+const statusLabel = { pending: 'Chờ TT', paid: 'Đã TT', cancelled: 'Đã huỷ' };
+const statusBadge = { pending: 'badge-pending', paid: 'badge-paid', cancelled: 'badge-cancelled' };
+
+function renderOrders(list) {
+  const tb = document.getElementById('orders-tbody');
+  if (!list.length) {
+    tb.innerHTML = '<tr><td colspan="11"><div class="empty">Chưa có đơn hàng nào</div></td></tr>';
+    return;
+  }
+  tb.innerHTML = list.map(o => `
+    <tr>
+      <td>${o.id}</td>
+      <td><strong>${esc(o.customer_name || '')}</strong></td>
+      <td style="color:var(--text-dim)">${esc(o.customer_phone || '')}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis">${esc(o.product_name || '')}</td>
+      <td>${o.amount ? o.amount.toLocaleString('vi-VN') + ' ₫' : '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td><span class="badge ${statusBadge[o.status] || ''}">${statusLabel[o.status] || o.status}</span></td>
+      <td style="color:var(--text-dim);font-size:12px">${esc(o.payment_ref || '')}</td>
+      <td style="color:var(--text-dim);font-size:12px">${o.ordered_at || ''}</td>
+      <td style="color:var(--text-dim);font-size:12px">${o.paid_at || ''}</td>
+      <td style="color:var(--text-dim);max-width:120px;overflow:hidden;text-overflow:ellipsis">${esc(o.note || '')}</td>
+      <td><div class="td-actions">
+        <button class="btn btn-ghost btn-sm" onclick="editOrder(${o.id})">Sửa</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteOrder(${o.id})">Xoá</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function filterOrders() {
+  const q = document.getElementById('order-search').value.toLowerCase();
+  renderOrders(orders.filter(o =>
+    (o.customer_name || '').toLowerCase().includes(q) ||
+    (o.customer_phone || '').includes(q)
+  ));
+}
+
+function openOrderModal(o = null) {
+  editingId.order = o ? o.id : null;
+  document.getElementById('order-modal-title').textContent = o ? 'Sửa đơn hàng' : 'Thêm đơn hàng';
+  populateCustomerSelect();
+  populateProductSelect();
+  document.getElementById('o-customer').value = o?.customer_id || '';
+  document.getElementById('o-product').value = o?.product_id || '';
+  document.getElementById('o-amount').value = o?.amount || 0;
+  document.getElementById('o-status').value = o?.status || 'pending';
+  document.getElementById('o-ref').value = o?.payment_ref || '';
+  document.getElementById('o-note').value = o?.note || '';
+  document.getElementById('order-err').classList.remove('show');
+  openModal('order-modal');
+}
+
+function editOrder(id) { openOrderModal(orders.find(o => o.id === id)); }
+
+async function saveOrder() {
+  const customerId = document.getElementById('o-customer').value;
+  const productId = document.getElementById('o-product').value;
+  if (!customerId || !productId) { showErr('order-err', 'Vui lòng chọn khách hàng và sản phẩm'); return; }
+  const body = {
+    customer_id: parseInt(customerId),
+    product_id: parseInt(productId),
+    amount: parseInt(document.getElementById('o-amount').value) || 0,
+    status: document.getElementById('o-status').value,
+    payment_ref: document.getElementById('o-ref').value.trim(),
+    note: document.getElementById('o-note').value.trim()
+  };
+  try {
+    if (editingId.order) {
+      await api('PUT', `/api/orders/${editingId.order}`, body);
+      toast('Đã cập nhật đơn hàng');
+    } else {
+      await api('POST', '/api/orders', body);
+      toast('Đã tạo đơn — slot sản phẩm đã được trừ 1');
+    }
+    closeModal('order-modal');
+    await Promise.all([loadOrders(), loadProducts()]);
+    loadStats();
+  } catch (e) { showErr('order-err', e.message); }
+}
+
+async function deleteOrder(id) {
+  confirm('Xoá đơn hàng này? Slot sản phẩm sẽ được hoàn lại.', async () => {
+    await api('DELETE', `/api/orders/${id}`);
+    toast('Đã xoá đơn hàng', 'error');
+    await Promise.all([loadOrders(), loadProducts()]);
+    loadStats();
+  });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+(async () => {
+  await Promise.all([loadProducts(), loadCustomers(), loadOrders(), loadStats()]);
+})();
+</script>
+</body>
+</html>

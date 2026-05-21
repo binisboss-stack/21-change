@@ -1,6 +1,11 @@
 // Dán URL Webhook Make.com (Custom Webhook module) vào dòng dưới
 window.MAKE_WEBHOOK_URL = 'https://hook.eu1.make.com/c51l36ypd0wclux3p80j9n9qbi9uth9r';
 
+// URL của admin server để lưu khách hàng vào brain.db
+// Khi chạy local: http://localhost:5000
+// Khi dùng ngrok: thay bằng URL ngrok của bạn (vd: https://xxxx.ngrok-free.app)
+window.ADMIN_API_URL = 'http://localhost:5000';
+
 // Nguồn hiển thị trên Make.com khi khách gửi form
 window.SITE_SOURCE = 'https://www.tiemhoatmon.com/';
 

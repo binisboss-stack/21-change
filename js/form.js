@@ -27,14 +27,14 @@
             name: (data.get('name') || '').toString().trim(),
             phone: (data.get('phone') || '').toString().trim(),
             email: (data.get('email') || '').toString().trim(),
-            message: (data.get('message') || '').toString().trim(),
+            service: (data.get('service') || '').toString().trim(),
             source: (window.SITE_SOURCE || window.location.origin || '').trim(),
             submitted_at: now.toISOString(),
             submitted_at_vn: now.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
         };
 
-        if (!payload.name || !payload.phone) {
-            setStatus('Vui lòng nhập Họ tên và Số điện thoại.', 'error');
+        if (!payload.name || !payload.phone || !payload.email || !payload.service) {
+            setStatus('Vui lòng điền đầy đủ thông tin bắt buộc.', 'error');
             return;
         }
 
@@ -52,10 +52,24 @@
                 throw new Error('HTTP ' + res.status);
             }
 
+            // Lưu khách hàng vào brain.db (không block nếu admin server offline)
+            var adminUrl = (window.ADMIN_API_URL || 'http://localhost:5000').replace(/\/$/, '');
+            fetch(adminUrl + '/api/customers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: payload.name,
+                    phone: payload.phone,
+                    email: payload.email,
+                    service: payload.service,
+                    source: 'website'
+                })
+            }).catch(function () {});
+
             form.reset();
             setStatus('Đã nhận thông tin! Vui lòng chuyển khoản bên dưới để giữ suất.', 'success');
 
-            // Hiện QR thanh toán với nội dung CK gắn tên khách
+            // Hiện QR thanh toán với nội dung CK gắn tên khách + dịch vụ
             var desc = 'NEXUSVIP ' + payload.name;
             var qrImg    = document.getElementById('payment-qr');
             var descEl   = document.getElementById('payment-desc');
