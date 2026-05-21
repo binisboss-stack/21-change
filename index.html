@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Be+Vietnam+Pro:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/chatbot.css">
     <style>
         :root {
             --bg-black: #050505;
@@ -869,5 +870,72 @@
     <script src="config.js"></script>
     <script src="js/contact.js"></script>
     <script src="js/form.js"></script>
+
+    <!-- ── CHATBOT WIDGET ─────────────────────────────────────────────────── -->
+    <div id="chatbot-widget">
+
+      <!-- Toggle button -->
+      <button id="chatbot-toggle" aria-label="Mở chat hỗ trợ" title="Chat hỗ trợ 24/7">
+        <!-- icon chat (hiện khi đóng) -->
+        <svg id="cb-icon-chat" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+        <!-- icon X (hiện khi mở) -->
+        <svg id="cb-icon-close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"
+             style="display:none">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        <!-- notification badge -->
+        <span id="chatbot-badge" aria-hidden="true">1</span>
+      </button>
+
+      <!-- Chat window (hidden by default) -->
+      <div id="chatbot-window" role="dialog" aria-label="Chat hỗ trợ NEXUS VIP GROUP" hidden>
+
+        <!-- Header -->
+        <div id="chatbot-header">
+          <div class="cb-avatar" aria-hidden="true">N</div>
+          <div class="cb-header-info">
+            <div class="cb-name">NEXUS VIP GROUP</div>
+            <div class="cb-status">
+              <span class="cb-dot" aria-hidden="true"></span>
+              Bot hỗ trợ · 24/7
+            </div>
+          </div>
+          <button id="cb-close-btn" aria-label="Đóng chat">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Messages -->
+        <div id="chatbot-messages" role="log" aria-live="polite" aria-label="Tin nhắn"></div>
+
+        <!-- Quick replies -->
+        <div id="chatbot-quick-replies" aria-label="Trả lời nhanh"></div>
+
+        <!-- Input -->
+        <div id="chatbot-input-row">
+          <input id="chatbot-input" type="text" placeholder="Nhắn tin..."
+                 autocomplete="off" maxlength="200" aria-label="Nhập tin nhắn"/>
+          <button id="chatbot-send-btn" aria-label="Gửi">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+
+      </div><!-- /chatbot-window -->
+    </div><!-- /chatbot-widget -->
+
+    <script src="js/chatbot.js"></script>
 </body>
 </html>
