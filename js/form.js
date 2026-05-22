@@ -76,7 +76,7 @@
             var paySection = document.getElementById('payment-section');
             if (qrImg && descEl && paySection) {
                 descEl.textContent = desc;
-                qrImg.src = 'https://qr.sepay.vn/img?acc=04001010676388&bank=MSB&des='
+                qrImg.src = 'https://qr.sepay.vn/img?acc=05541117101&bank=TPB&des='
                             + encodeURIComponent(desc);
                 paySection.removeAttribute('hidden');
                 paySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
