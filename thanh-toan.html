@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán — StockVN Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Be+Vietnam+Pro:wght@500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #050505;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 16px;
+        }
+
+        .logo {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: #facc15;
+            text-decoration: none;
+            margin-bottom: 32px;
+            display: inline-block;
+        }
+
+        .card {
+            background: #121212;
+            border: 1.5px solid rgba(250,204,21,0.2);
+            border-radius: 20px;
+            padding: 36px 32px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .card-title {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card-sub {
+            color: #9ca3af;
+            font-size: 0.9rem;
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #d1d5db;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            background: #1a1a1a;
+            border: 1.5px solid rgba(250,204,21,0.2);
+            border-radius: 10px;
+            color: #f1f5f9;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+            appearance: none;
+        }
+
+        input:focus, select:focus {
+            border-color: rgba(250,204,21,0.6);
+        }
+
+        input::placeholder { color: #6b7280; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #facc15;
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .form-status {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .form-status--success { background: rgba(34,197,94,0.15); color: #86efac; }
+        .form-status--error   { background: rgba(239,68,68,0.15);  color: #fca5a5; }
+        .form-status--loading { background: rgba(255,255,255,0.07); color: #9ca3af; }
+
+        #payment-section {
+            margin-top: 28px;
+            background: rgba(0,0,0,0.4);
+            border: 2px solid rgba(250,204,21,0.35);
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        #payment-section h3 {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 1.15rem;
+            margin: 12px 0 6px;
+        }
+
+        #payment-section p.sub {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.88rem;
+            margin-bottom: 20px;
+        }
+
+        #payment-qr {
+            width: 220px;
+            height: 220px;
+            border-radius: 12px;
+            background: #fff;
+            padding: 8px;
+            display: block;
+            margin: 0 auto 20px;
+        }
+
+        .bank-info {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 0.9rem;
+            line-height: 2.2;
+        }
+
+        .bank-info span { color: rgba(255,255,255,0.5); }
+
+        #payment-desc { color: #facc15; }
+
+        .hint {
+            margin-top: 14px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .back-link {
+            margin-top: 24px;
+            display: inline-block;
+            color: #9ca3af;
+            font-size: 0.85rem;
+            text-decoration: none;
+        }
+
+        .back-link:hover { color: #facc15; }
+    </style>
+</head>
+<body>
+
+    <a class="logo" href="/">← StockVN Premium</a>
+
+    <div class="card">
+        <h1 class="card-title">Hoàn tất đăng ký</h1>
+        <p class="card-sub">Điền thông tin để nhận tài liệu và giữ suất Room VIP.</p>
+
+        <form id="register-form" autocomplete="on">
+            <div class="form-group">
+                <label for="name">Họ và tên *</label>
+                <input type="text" id="name" name="name" required placeholder="Nguyễn Văn A">
+            </div>
+            <div class="form-group">
+                <label for="phone">Số điện thoại *</label>
+                <input type="tel" id="phone" name="phone" required placeholder="09xx xxx xxx">
+            </div>
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" required placeholder="email@example.com">
+            </div>
+            <div class="form-group">
+                <label for="service">Dịch vụ *</label>
+                <select id="service" name="service" required>
+                    <option value="" disabled selected>— Chọn dịch vụ —</option>
+                    <option value="PDF Checklist">PDF Checklist — SL/TP XAUUSD</option>
+                    <option value="Notion Template">Notion Template — Trading Journal</option>
+                    <option value="Video 20 phút + Cheat Sheet">Video 20 phút + Cheat Sheet</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submit-btn">Đặt hàng &amp; Thanh toán</button>
+            <p id="form-status" class="form-status" hidden></p>
+        </form>
+
+        <div id="payment-section" hidden>
+            <div style="font-size:2rem;">✅</div>
+            <h3>Đăng ký thành công!</h3>
+            <p class="sub">Quét QR bên dưới để chuyển khoản giữ suất.</p>
+
+            <img id="payment-qr" src="" alt="QR thanh toán TPBank">
+
+            <div class="bank-info">
+                <div><span>Ngân hàng:</span> &nbsp;<strong>TPBank</strong></div>
+                <div><span>Số tài khoản:</span> &nbsp;<strong>05541117101</strong></div>
+                <div><span>Số tiền:</span> &nbsp;<strong>2.000 đ</strong></div>
+                <div><span>Nội dung CK:</span> &nbsp;<strong id="payment-desc">NEXUSVIP</strong></div>
+            </div>
+
+            <p class="hint">Giữ nguyên trang này — hệ thống sẽ tự xác nhận sau khi nhận tiền.</p>
+        </div>
+    </div>
+
+    <a class="back-link" href="/">← Quay về trang chủ</a>
+
+    <script src="config.js"></script>
+    <script>
+    (function () {
+        var form    = document.getElementById('register-form');
+        var btn     = document.getElementById('submit-btn');
+        var statusEl = document.getElementById('form-status');
+        var paySection = document.getElementById('payment-section');
+        var qrImg   = document.getElementById('payment-qr');
+        var descEl  = document.getElementById('payment-desc');
+
+        function setStatus(msg, type) {
+            statusEl.textContent = msg;
+            statusEl.className = 'form-status form-status--' + type;
+            statusEl.hidden = !msg;
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            var webhookUrl = (window.MAKE_WEBHOOK_URL || '').trim();
+            if (!webhookUrl) {
+                setStatus('Chưa cấu hình Webhook.', 'error');
+                return;
+            }
+
+            var data = new FormData(form);
+            var now  = new Date();
+            var payload = {
+                name:    (data.get('name')    || '').trim(),
+                phone:   (data.get('phone')   || '').trim(),
+                email:   (data.get('email')   || '').trim(),
+                service: (data.get('service') || '').trim(),
+                source:  (window.SITE_SOURCE  || window.location.origin).trim(),
+                submitted_at:    now.toISOString(),
+                submitted_at_vn: now.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })
+            };
+
+            if (!payload.name || !payload.phone || !payload.email || !payload.service) {
+                setStatus('Vui lòng điền đầy đủ thông tin bắt buộc.', 'error');
+                return;
+            }
+
+            btn.disabled = true;
+            setStatus('Đang gửi...', 'loading');
+
+            try {
+                var res = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+
+                // Lưu khách hàng vào brain.db
+                var adminUrl = (window.ADMIN_API_URL || '').replace(/\/$/, '');
+                fetch(adminUrl + '/api/customers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: payload.name, phone: payload.phone,
+                        email: payload.email, service: payload.service,
+                        source: 'website'
+                    })
+                }).catch(function () {});
+
+                form.style.display = 'none';
+                statusEl.hidden = true;
+
+                // Hiện QR
+                var desc = 'NEXUSVIP ' + payload.name;
+                descEl.textContent = desc;
+                qrImg.src = 'https://qr.sepay.vn/img?acc=05541117101&bank=TPB&des='
+                            + encodeURIComponent(desc) + '&amount=2000';
+                paySection.removeAttribute('hidden');
+                paySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Polling kiểm tra thanh toán mỗi 4 giây (tối đa 5 phút)
+                var pollCount = 0;
+                var pollInterval = setInterval(function () {
+                    pollCount++;
+                    if (pollCount > 75) { clearInterval(pollInterval); return; }
+                    fetch(adminUrl + '/api/payment-status?phone=' + encodeURIComponent(payload.phone))
+                        .then(function (r) { return r.json(); })
+                        .then(function (d) {
+                            if (d.status === 'paid' || d.status === 'success') {
+                                clearInterval(pollInterval);
+                                paySection.innerHTML =
+                                    '<div style="font-size:3rem;margin-bottom:16px;">🎉</div>' +
+                                    '<h3 style="font-family:\'Be Vietnam Pro\',sans-serif;font-size:1.3rem;color:#86efac;margin-bottom:10px;">Thanh toán thành công!</h3>' +
+                                    '<p style="color:rgba(255,255,255,0.65);font-size:0.9rem;">Cảm ơn bạn đã đăng ký. Chúng tôi sẽ liên hệ trong thời gian sớm nhất.</p>';
+                                paySection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        })
+                        .catch(function () {});
+                }, 4000);
+
+            } catch (err) {
+                setStatus('Gửi thất bại. Kiểm tra kết nối và thử lại.', 'error');
+                btn.disabled = false;
+            }
+        });
+    })();
+    </script>
+</body>
+</html>
