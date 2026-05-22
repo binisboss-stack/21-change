@@ -12,15 +12,22 @@ from flask import Flask, jsonify, request, send_from_directory, abort
 
 # ── Resend config ────────────────────────────────────────────────────────────
 
-_resend_key_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resend_config.txt')
-try:
-    with open(_resend_key_path) as _f:
-        resend.api_key = _f.read().strip()
+_resend_key = os.environ.get('RESEND_API_KEY', '')
+if not _resend_key:
+    _resend_key_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resend_config.txt')
+    try:
+        with open(_resend_key_path) as _f:
+            _resend_key = _f.read().strip()
+    except FileNotFoundError:
+        pass
+
+if _resend_key:
+    resend.api_key = _resend_key
     RESEND_ENABLED = True
     print('[Resend] API key loaded OK')
-except FileNotFoundError:
+else:
     RESEND_ENABLED = False
-    print('[Resend] resend_config.txt not found — email disabled')
+    print('[Resend] No API key found — email disabled')
 
 RESEND_FROM = os.environ.get('RESEND_FROM', 'onboarding@resend.dev')
 SITE_URL = os.environ.get('SITE_URL', 'https://www.tiemhoatmon.com')
