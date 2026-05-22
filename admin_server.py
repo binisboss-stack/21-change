@@ -353,8 +353,8 @@ def sepay_webhook():
 
         if customer_name:
             row = conn.execute(
-                "SELECT id FROM customers WHERE UPPER(name) LIKE ?",
-                ('%' + customer_name + '%',)
+                "SELECT id FROM customers WHERE LENGTH(name) > 2 AND ? LIKE '%' || UPPER(name) || '%'",
+                (customer_name,)
             ).fetchone()
             if row:
                 customer_id = row['id']
