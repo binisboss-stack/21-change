@@ -7,7 +7,7 @@ import sqlite3
 import os
 import threading
 import resend
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, jsonify, request, send_from_directory, abort
 
 # ── Resend config ────────────────────────────────────────────────────────────
@@ -125,30 +125,51 @@ def _send(to_email, subject, html_body):
         print(f'[Resend] ERROR sending to {to_email}: {exc}')
 
 
-def _after(seconds, fn, *args):
-    t = threading.Timer(seconds, fn, args=args)
-    t.daemon = True
-    t.start()
-
-
 def trigger_email_sequence(email, name):
     is_test = '+test' in email.lower()
-    # Resend chỉ nhận exact email — bỏ phần +alias khi gửi
     send_to = email.lower().replace('+test', '') if is_test else email
-    d2 = 5 if is_test else 2 * 24 * 3600    # 5 giây hoặc 2 ngày
-    d3 = 12 if is_test else 3 * 24 * 3600   # 12 giây hoặc 3 ngày
+    d2 = timedelta(seconds=5)  if is_test else timedelta(days=2)
+    d3 = timedelta(seconds=12) if is_test else timedelta(days=3)
 
     s1, h1 = _email1(name)
     _send(send_to, s1, h1)
 
-    s2, h2 = _email2(name)
-    _after(d2, _send, send_to, s2, h2)
+    now = datetime.now()
+    at2 = (now + d2).strftime('%Y-%m-%d %H:%M:%S')
+    at3 = (now + d3).strftime('%Y-%m-%d %H:%M:%S')
+    with get_db() as conn:
+        conn.execute(
+            'INSERT INTO email_queue (to_email, name, email_num, send_at) VALUES (?, ?, 2, ?)',
+            (send_to, name, at2)
+        )
+        conn.execute(
+            'INSERT INTO email_queue (to_email, name, email_num, send_at) VALUES (?, ?, 3, ?)',
+            (send_to, name, at3)
+        )
+        conn.commit()
 
-    s3, h3 = _email3(name)
-    _after(d3, _send, send_to, s3, h3)
+    mode = 'TEST (email 2 sau 5s, email 3 sau 12s)' if is_test else 'LIVE (email 2 sau 2 ngày, email 3 sau 3 ngày)'
+    print(f'[Resend] Sequence queued for {email} — {mode}')
 
-    mode = 'TEST (cả 3 email gửi ngay)' if is_test else 'LIVE (email 2 sau 2 ngày, email 3 sau 3 ngày)'
-    print(f'[Resend] Sequence triggered for {email} — {mode}')
+
+def _email_worker():
+    import time
+    while True:
+        time.sleep(10)
+        try:
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            with get_db() as conn:
+                rows = conn.execute(
+                    'SELECT * FROM email_queue WHERE sent=0 AND send_at <= ?', (now,)
+                ).fetchall()
+                for row in rows:
+                    row = dict(row)
+                    s, h = (_email2 if row['email_num'] == 2 else _email3)(row['name'])
+                    _send(row['to_email'], s, h)
+                    conn.execute('UPDATE email_queue SET sent=1 WHERE id=?', (row['id'],))
+                conn.commit()
+        except Exception as exc:
+            print(f'[EmailWorker] Error: {exc}')
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _data_dir = os.environ.get('DATA_DIR', BASE_DIR)
@@ -181,6 +202,14 @@ def init_db():
                 source        TEXT DEFAULT 'website',
                 registered_at TEXT,
                 note          TEXT
+            );
+            CREATE TABLE IF NOT EXISTS email_queue (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                to_email  TEXT NOT NULL,
+                name      TEXT NOT NULL,
+                email_num INTEGER NOT NULL,
+                send_at   TEXT NOT NULL,
+                sent      INTEGER DEFAULT 0
             );
             CREATE TABLE IF NOT EXISTS orders (
                 id           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -605,6 +634,7 @@ def stats():
 
 
 init_db()
+threading.Thread(target=_email_worker, daemon=True).start()
 
 if __name__ == '__main__':
     os.makedirs(ADMIN_DIR, exist_ok=True)
