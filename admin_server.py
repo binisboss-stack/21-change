@@ -456,6 +456,7 @@ def create_order():
     row = order_row
     # Gửi email xác nhận đơn hàng
     if row and row['customer_email']:
+        send_email_to = row['customer_email'].lower().replace('+test', '')
         cname = row['customer_name'] or 'bạn'
         pname = row['product_name'] or 'Sản phẩm'
         amount_fmt = f"{int(row['amount']):,}".replace(',', '.')
@@ -471,7 +472,7 @@ def create_order():
         ])
         threading.Thread(
             target=_send,
-            args=(row['customer_email'], confirm_subject, confirm_html),
+            args=(send_email_to, confirm_subject, confirm_html),
             daemon=True
         ).start()
     return jsonify(row_to_dict(row)), 201
