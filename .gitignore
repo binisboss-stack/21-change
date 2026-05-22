@@ -3,3 +3,5 @@ Thumbs.db
 *.log
 brain.db
 *.db
+resend_config.txt
+__pycache__/

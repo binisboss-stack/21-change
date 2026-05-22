@@ -15,7 +15,10 @@
 **Kết quả sau 4 tháng:** Về bờ và lãi ngược 15%
 
 **Câu chuyện:**
-"Năm 2022 tôi mua cổ phiếu theo nhóm chat Telegram, hôm nào thấy xanh là mua vào — không cần biết Entry hay Cutloss là gì. Kết quả tài khoản từ 200 triệu xuống còn 120 triệu. Sau khi vào StockVN, điều đầu tiên team làm là dọn sạch danh mục rác, cơ cấu lại tỷ trọng và hướng dẫn tôi tuân thủ điểm cắt lỗ. 4 tháng sau tôi về bờ và đang lãi 15%. Điều tôi thích nhất là phân tích rất có tâm và điểm Cutloss cực kỳ dứt khoát — không có kiểu 'cứ giữ đi rồi lên'."
+"Today’s results were clean from start to finish. 🔥
+The best feeling is opening my messages and seeing members sending profit screenshots with excitement after following the signals patiently.
+No unnecessary hype, no fake promises, just staying focused, managing trades properly, and letting the results speak over time.
+Proud to see so many people ending the day in profit again"
 
 **Rating:** ★★★★★
 
